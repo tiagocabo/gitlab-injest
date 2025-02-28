@@ -31,22 +31,13 @@ if gitlab_repo:
         enc = tiktoken.get_encoding("o200k_base")
 
         count_tokens = len(enc.encode(full_content))
-        text_summary = st.text_area("Summary",
-                       f""" **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""",
-                       height=200)
+        text_summary = st.code(
+                       f""""Summary"\n **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""", language="text", height=300)
         
-        if st.button('Copy', key="copy Summary"):
-            pyperclip.copy(text_summary)
-            st.success('Text copied successfully!')
-
 
     with col2:
-        directory_text = st.text_area("List of files", "Repo structure:\n" + "\n".join(list_files), height=200)
-        if st.button('Copy', key="copy directory"):
-            pyperclip.copy(directory_text)
-            st.success('Text copied successfully!')
+        directory_text = st.code("List of files \n Repo structure:\n" + "\n".join(list_files), language="text", height=300)
+       
 
-    ta = st.text_area("File Content", full_content, height=600)
-    if st.button('Copy', key="copy content"):
-        pyperclip.copy(ta)
-        st.success('Text copied successfully!')
+    ta = st.code("Repo Contents: \n " + full_content,language="text", height=600)
+   
