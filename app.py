@@ -24,20 +24,25 @@ if gitlab_repo:
     # parse url
     repo_url = gitlab_repo.replace("/", "%2F")
 
-    list_files, full_content, n_files = iterate_folder_simple(organization, repo_url, gitlab_token)
-
+    list_files, full_content, n_files = iterate_folder_simple(
+        organization, repo_url, gitlab_token
+    )
 
     with col1:
         enc = tiktoken.get_encoding("o200k_base")
 
         count_tokens = len(enc.encode(full_content))
         text_summary = st.code(
-                       f""""Summary"\n **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""", language="text", height=300)
-        
+            f""""Summary"\n **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""",
+            language="text",
+            height=300,
+        )
 
     with col2:
-        directory_text = st.code("List of files \n Repo structure:\n" + "\n".join(list_files), language="text", height=300)
-       
+        directory_text = st.code(
+            "List of files \n Repo structure:\n" + "\n".join(list_files),
+            language="text",
+            height=300,
+        )
 
-    ta = st.code("Repo Contents: \n " + full_content,language="text", height=600)
-   
+    ta = st.code("Repo Contents: \n " + full_content, language="text", height=600)

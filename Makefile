@@ -1,5 +1,8 @@
 test:
-	pytest -v
+	poetry run pytest -v
 
 setup:
-	poetry install
+	poetry install --no-root
+
+format:
+	poetry run ruff format .
