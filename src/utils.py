@@ -2,7 +2,7 @@ import requests
 import base64
 import streamlit as st
 
-st.cache_data
+@st.cache_data
 def list_repo_tree(organization, repo_url, gitlab_token):
     url = f"https://{organization}/api/v4/projects/{repo_url}/repository/tree?ref=main&recursive=true"
     headers = {
@@ -16,7 +16,7 @@ def list_repo_tree(organization, repo_url, gitlab_token):
         files_list.append(file["path"])
     return files_list
 
-st.cache_data
+@st.cache_data
 def list_subfolder(organation, repo_url, gitlab_token, folder="."):
     url = f"https://{organation}/api/v4/projects/{repo_url}/repository/tree?ref=main&path={folder}"
     headers = {
@@ -33,7 +33,7 @@ def list_subfolder(organation, repo_url, gitlab_token, folder="."):
         return False
     return files_list
 
-st.cache_data
+@st.cache_data
 def read_repo_file(organation, repo_url, gitlab_token, file_path):
     file_path = file_path.replace("/", "%2F")
     url = f"https://{organation}/api/v4/projects/{repo_url}/repository/files/{file_path}"
@@ -48,7 +48,7 @@ def read_repo_file(organation, repo_url, gitlab_token, file_path):
         return None
     return file_content
 
-st.cache_data
+@st.cache_data
 def prepare_content(organization, file, repo_url, gitlab_token):
     if ".py" in file or ".md" in file:
         text_header = "="*50 + "\n"+ file + "\n" + "="*50
@@ -60,7 +60,7 @@ def prepare_content(organization, file, repo_url, gitlab_token):
     return full_content
 
 
-st.cache_data
+@st.cache_data
 def iterate_folder(repo_url, gitlab_token):
     base = "|"
     marker = "-"
@@ -94,7 +94,7 @@ def iterate_folder(repo_url, gitlab_token):
                             sub_files = list_subfolder(repo_url, gitlab_token, sub_file)
     return list_files, full_content, len(list_files)
 
-st.cache_data
+@st.cache_data
 def iterate_folder_simple(organation, repo_url, gitlab_token):
     
     def prepare_info(organation,repo_url, gitlab_token, files, level):
