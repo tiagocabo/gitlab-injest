@@ -1,11 +1,14 @@
 test:
-	poetry run pytest --cov src tests
+	pytest --cov src tests
 
 setup:
 	poetry install --no-root
 
 format:
-	poetry run ruff format .
+	ruff format .
 
 lint:
-	poetry run ruff check
+	ruff check
+
+app:
+	streamlit run app.py

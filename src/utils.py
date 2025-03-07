@@ -2,26 +2,36 @@ import requests
 import base64
 
 
-def list_subfolder(organation, repo_url, gitlab_token, folder="."):
-    url = f"https://{organation}/api/v4/projects/{repo_url}/repository/tree?ref=main&path={folder}"
+def list_subfolder(organization, repo_url, gitlab_token, folder="."):
+    url = f"https://{organization}/api/v4/projects/{repo_url}/repository/tree"
     headers = {"PRIVATE-TOKEN": gitlab_token}
+    params = {"ref": "main", "path": folder}
 
-    response = requests.get(url, headers=headers)
-    try:
-        files = response.json()
-        files_list = []
-        for file in files:
-            files_list.append(file["path"])
-    except ValueError("Folder not found"):
-        return False
-    return files_list
+    for attempt in range(3):
+        response = requests.get(url, headers=headers, params=params)
+
+        if response.status_code == 200:
+            try:
+                files = response.json()
+                return [file["path"] for file in files]
+            except ValueError:
+                print("Failed to parse JSON response.")
+                return []
+        elif response.status_code == 404:
+            print("Folder not found.")
+            return []
+        else:
+            print(
+                f"Attempt {attempt + 1}: Request failed with status code {response.status_code}: {response.text}"
+            )
+
+    print("All retry attempts failed.")
+    return []
 
 
-def read_repo_file(organation, repo_url, gitlab_token, file_path):
+def read_repo_file(organization, repo_url, gitlab_token, file_path):
     file_path = file_path.replace("/", "%2F")
-    url = (
-        f"https://{organation}/api/v4/projects/{repo_url}/repository/files/{file_path}"
-    )
+    url = f"https://{organization}/api/v4/projects/{repo_url}/repository/files/{file_path}"
     params = {"ref": "main"}
     headers = {"PRIVATE-TOKEN": gitlab_token}
 
@@ -43,72 +53,37 @@ def prepare_content(organization, file, repo_url, gitlab_token):
     else:
         return ""
     return full_content
-    base = "|"
-    marker = "-"
-    list_files = []
-    full_content = ""
-
-    files = list_subfolder(repo_url, gitlab_token)
-
-    for file in files:
-        if not list_subfolder(repo_url, gitlab_token, file):
-            list_files.append(base + 2 * marker + file)
-            full_content += prepare_content(file, repo_url, gitlab_token)
-
-        else:
-            list_files.append(base + 2 * marker + file + "/")
-            sub_files = list_subfolder(repo_url, gitlab_token, file)
-            for sub_file in sub_files:
-                if not list_subfolder(repo_url, gitlab_token, sub_file):
-                    list_files.append(base + 4 * marker + sub_file.split("/")[-1])
-                    full_content += prepare_content(sub_file, repo_url, gitlab_token)
-                else:
-                    list_files.append(base + 4 * marker + sub_file.split("/")[-1] + "/")
-
-                    sub_files = list_subfolder(repo_url, gitlab_token, sub_file)
-                    for sub_file in sub_files:
-                        if not list_subfolder(sub_file, gitlab_token, sub_file):
-                            list_files.append(
-                                base + 6 * marker + sub_file.split("/")[-1]
-                            )
-                            full_content += prepare_content(
-                                sub_file, repo_url, gitlab_token
-                            )
-
-                        else:
-                            sub_files = list_subfolder(repo_url, gitlab_token, sub_file)
-    return list_files, full_content, len(list_files)
 
 
-def iterate_folder_simple(organation, repo_url, gitlab_token):
-    def prepare_info(organation, repo_url, gitlab_token, files, level):
+def iterate_folder_simple(organization, repo_url, gitlab_token):
+    def prepare_info(organization, repo_url, gitlab_token, files, level):
         marker = "|----"
         base = "|    "
         list_files = []
         full_content = ""
         while files:
             file = files.pop(0)
-            sub_files = list_subfolder(organation, repo_url, gitlab_token, file)
+            sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
             if not sub_files:
                 list_files += [level * base + marker + file.split("/")[-1]]
                 full_content += prepare_content(
-                    organation, file, repo_url, gitlab_token
+                    organization, file, repo_url, gitlab_token
                 )
             else:
                 list_files.append(level * base + marker + file.split("/")[-1] + "/")
                 level += 1
                 level_files, level_content = prepare_info(
-                    organation, repo_url, gitlab_token, sub_files, level
+                    organization, repo_url, gitlab_token, sub_files, level
                 )
                 level -= 1
                 list_files += level_files
                 full_content += level_content
         return list_files, full_content
 
-    files = list_subfolder(organation, repo_url, gitlab_token)
+    files = list_subfolder(organization, repo_url, gitlab_token)
     level = 0
     directory, full_content = prepare_info(
-        organation, repo_url, gitlab_token, files, level
+        organization, repo_url, gitlab_token, files, level
     )
 
     return directory, full_content, len(directory)
