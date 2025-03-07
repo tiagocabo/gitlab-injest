@@ -1,5 +1,8 @@
 import requests
 import base64
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def list_subfolder(organization, repo_url, gitlab_token, folder="."):
@@ -7,26 +10,18 @@ def list_subfolder(organization, repo_url, gitlab_token, folder="."):
     headers = {"PRIVATE-TOKEN": gitlab_token}
     params = {"ref": "main", "path": folder}
 
-    for attempt in range(3):
-        response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=params)
 
-        if response.status_code == 200:
-            try:
-                files = response.json()
-                return [file["path"] for file in files]
-            except ValueError:
-                print("Failed to parse JSON response.")
-                return []
-        elif response.status_code == 404:
-            print("Folder not found.")
+    if response.status_code == 200:
+        try:
+            files = response.json()
+            return [file["path"] for file in files]
+        except ValueError:
+            logger.info("Failed to parse JSON response.")
             return []
-        else:
-            print(
-                f"Attempt {attempt + 1}: Request failed with status code {response.status_code}: {response.text}"
-            )
-
-    print("All retry attempts failed.")
-    return []
+    elif response.status_code == 404:
+        logger.info("Folder not found.")
+        return []
 
 
 def read_repo_file(organization, repo_url, gitlab_token, file_path):
