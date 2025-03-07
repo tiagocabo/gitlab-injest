@@ -30,7 +30,7 @@ def test_prepare_info_multiple_files():
     """Test when multiple files are processed."""
     with (
         patch("src.utils.list_subfolder", side_effect=[[], []]),
-        patch("src.utils.prepare_content", side_effect=["Content A", "Content B"]),
+        patch("src.utils.prepare_content", side_effect=["", "Content B"]),
     ):
         files = ["script.py", "README.md"]
         result_files, result_content = prepare_info(
@@ -38,7 +38,7 @@ def test_prepare_info_multiple_files():
         )
 
     expected_files = ["|----script.py", "|----README.md"]
-    expected_content = "Content A\nContent B\n"
+    expected_content = "Content B\n"
 
     assert result_files == expected_files
     assert result_content == expected_content

@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 def prepare_content(organization, file, repo_url, gitlab_token):
     if ".py" in file or ".md" in file:
         text_header = "=" * 50 + "\n" + file + "\n" + "=" * 50
-
         content = read_repo_file(organization, repo_url, gitlab_token, file)
         full_content = "\n" + text_header + "\n" + content
     else:
@@ -26,9 +25,9 @@ def prepare_info(organization, repo_url, gitlab_token, files, level):
         sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
         if not sub_files:
             list_files += [level * base + marker + file.split("/")[-1]]
-            full_content += (
-                prepare_content(organization, file, repo_url, gitlab_token) + "\n"
-            )
+            file_content = prepare_content(organization, file, repo_url, gitlab_token)
+            if file_content:
+                full_content += file_content + "\n"
         else:
             list_files.append(level * base + marker + file.split("/")[-1] + "/")
             level += 1
@@ -37,7 +36,8 @@ def prepare_info(organization, repo_url, gitlab_token, files, level):
             )
             level -= 1
             list_files += level_files
-            full_content += level_content + "\n"
+            if level_content:
+                full_content += level_content + "\n"
     return list_files, full_content
 
 
