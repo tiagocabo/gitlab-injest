@@ -5,6 +5,19 @@ from src.gitlab.gitlab_api import list_subfolder, read_repo_file
 
 logger = logging.getLogger(__name__)
 
+SUPPORTED_EXTENSIONS = [
+    ".py",
+    ".md",
+    ".yaml",
+    ".yml",
+    ".ipynb",
+    ".dockerignore",
+    ".dockerfile",
+    ".txt",
+    ".sh",
+    ".json",
+]
+
 
 def prepare_content(
     organization: str, file: str, repo_url: str, gitlab_token: str
@@ -20,7 +33,7 @@ def prepare_content(
     Returns:
         str: The formatted file content if applicable, otherwise an empty string.
     """
-    if ".py" in file or ".md" in file:
+    if any(file.endswith(ext) for ext in SUPPORTED_EXTENSIONS):
         text_header = "=" * 50 + "\n" + file + "\n" + "=" * 50
         content = read_repo_file(organization, repo_url, gitlab_token, file)
         full_content = "\n" + text_header + "\n" + content
