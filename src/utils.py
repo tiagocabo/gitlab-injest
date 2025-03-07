@@ -55,31 +55,30 @@ def prepare_content(organization, file, repo_url, gitlab_token):
     return full_content
 
 
-def iterate_folder_simple(organization, repo_url, gitlab_token):
-    def prepare_info(organization, repo_url, gitlab_token, files, level):
-        marker = "|----"
-        base = "|    "
-        list_files = []
-        full_content = ""
-        while files:
-            file = files.pop(0)
-            sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
-            if not sub_files:
-                list_files += [level * base + marker + file.split("/")[-1]]
-                full_content += prepare_content(
-                    organization, file, repo_url, gitlab_token
-                )
-            else:
-                list_files.append(level * base + marker + file.split("/")[-1] + "/")
-                level += 1
-                level_files, level_content = prepare_info(
-                    organization, repo_url, gitlab_token, sub_files, level
-                )
-                level -= 1
-                list_files += level_files
-                full_content += level_content
-        return list_files, full_content
+def prepare_info(organization, repo_url, gitlab_token, files, level):
+    marker = "|----"
+    base = "|    "
+    list_files = []
+    full_content = ""
+    while files:
+        file = files.pop(0)
+        sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
+        if not sub_files:
+            list_files += [level * base + marker + file.split("/")[-1]]
+            full_content += prepare_content(organization, file, repo_url, gitlab_token)
+        else:
+            list_files.append(level * base + marker + file.split("/")[-1] + "/")
+            level += 1
+            level_files, level_content = prepare_info(
+                organization, repo_url, gitlab_token, sub_files, level
+            )
+            level -= 1
+            list_files += level_files
+            full_content += level_content
+    return list_files, full_content
 
+
+def iterate_folder_simple(organization, repo_url, gitlab_token):
     files = list_subfolder(organization, repo_url, gitlab_token)
     level = 0
     directory, full_content = prepare_info(
