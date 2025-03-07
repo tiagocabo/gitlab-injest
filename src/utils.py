@@ -16,6 +16,12 @@ SUPPORTED_EXTENSIONS = [
     ".txt",
     ".sh",
     ".json",
+    "Makefile",
+    "Pipfile",
+    "requirements.txt",
+    "setup.py",
+    "Dockerfile",
+    "docker-compose.yml",
 ]
 
 
