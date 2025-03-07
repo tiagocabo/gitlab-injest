@@ -2,11 +2,10 @@ from unittest.mock import patch
 
 from src.utils import prepare_info
 
-
 def test_prepare_info_single_file():
     """Test when a single file is processed with no subfolders."""
     with (
-        patch("src.utils.gitlab.gitlab_api.list_subfolder", return_value=[]),
+        patch("src.gitlab.gitlab_api.list_subfolder", return_value=[]),
         patch("src.utils.prepare_content", return_value="File content"),
     ):
         files = ["script.py"]
@@ -40,10 +39,10 @@ def test_prepare_info_multiple_files():
 
 
 def test_prepare_info_with_subfolder():
-    """Test when a subfolder is present with files inside."""
+    """Test when a § is present with files inside."""
     with (
         patch(
-            "src.utils.gitlab.gitlab_api.list_subfolder",
+            "src.gitlab.gitlab_api.list_subfolder",
             side_effect=[["subfolder/file1.py"], []],
         ),
         patch("src.utils.prepare_content", return_value="File content"),
@@ -64,7 +63,7 @@ def test_prepare_info_nested_subfolders():
     """Test when multiple levels of subfolders exist."""
     with (
         patch(
-            "src.utils.gitlab.gitlab_api.list_subfolder",
+            "src.gitlab.gitlab_api.list_subfolder",
             side_effect=[
                 ["subfolder/nested"],
                 ["nested/file.py"],
@@ -88,7 +87,7 @@ def test_prepare_info_nested_subfolders():
 def test_prepare_info_no_files():
     """Test when an empty file list is given."""
     with (
-        patch("src.utils.gitlab.gitlab_api.list_subfolder", return_value=[]),
+        patch("src.gitlab.gitlab_api.list_subfolder", return_value=[]),
         patch("src.utils.prepare_content", return_value=""),
     ):
         files = []
