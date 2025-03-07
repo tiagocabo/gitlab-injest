@@ -99,7 +99,18 @@ def mock_content_success():
     return mock_response
 
 
-def test_read_repo_file(mock_requests_get, mock_content_success):
+@pytest.fixture
+def mock_content_insuccess():
+    """Fixture to create a mock response that simulates a server error (500)."""
+    mock_response = Mock()
+    file_content = "Hello, GitLab!"
+    encoded_content = base64.b64encode(file_content.encode("utf-8")).decode("utf-8")
+    mock_response.json.return_value = {"contents": encoded_content}
+
+    return mock_response
+
+
+def test_read_repo_file_success(mock_requests_get, mock_content_success):
     """Test the read_repo_file function."""
     mock_requests_get.return_value = mock_content_success
 
@@ -110,6 +121,19 @@ def test_read_repo_file(mock_requests_get, mock_content_success):
         file_path="file.py",
     )
     assert content == "Hello, GitLab!"
+
+
+def test_read_repo_file_insuccess(mock_requests_get, mock_content_insuccess):
+    """Test the read_repo_file function."""
+    mock_requests_get.return_value = mock_content_insuccess
+
+    content = read_repo_file(
+        organization="example.com",
+        repo_url="org/repo",
+        gitlab_token="token",
+        file_path="file.py",
+    )
+    assert content == None
 
 
 def content_generation():
