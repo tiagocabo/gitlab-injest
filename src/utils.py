@@ -60,7 +60,9 @@ def prepare_info(organization, repo_url, gitlab_token, files, level):
         sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
         if not sub_files:
             list_files += [level * base + marker + file.split("/")[-1]]
-            full_content += prepare_content(organization, file, repo_url, gitlab_token)
+            full_content += (
+                prepare_content(organization, file, repo_url, gitlab_token) + "\n"
+            )
         else:
             list_files.append(level * base + marker + file.split("/")[-1] + "/")
             level += 1
@@ -69,7 +71,7 @@ def prepare_info(organization, repo_url, gitlab_token, files, level):
             )
             level -= 1
             list_files += level_files
-            full_content += level_content
+            full_content += level_content + "\n"
     return list_files, full_content
 
 
