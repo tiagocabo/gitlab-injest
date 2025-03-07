@@ -1,4 +1,3 @@
-import pyperclip
 import streamlit as st
 import tiktoken
 from src.utils import iterate_folder_simple

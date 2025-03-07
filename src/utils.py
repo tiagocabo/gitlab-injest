@@ -1,18 +1,5 @@
 import requests
 import base64
-import streamlit as st
-
-
-def list_repo_tree(organization, repo_url, gitlab_token):
-    url = f"https://{organization}/api/v4/projects/{repo_url}/repository/tree?ref=main&recursive=true"
-    headers = {"PRIVATE-TOKEN": gitlab_token}
-
-    response = requests.get(url, headers=headers)
-    files = response.json()
-    files_list = []
-    for file in files:
-        files_list.append(file["path"])
-    return files_list
 
 
 def list_subfolder(organation, repo_url, gitlab_token, folder="."):
@@ -25,7 +12,7 @@ def list_subfolder(organation, repo_url, gitlab_token, folder="."):
         files_list = []
         for file in files:
             files_list.append(file["path"])
-    except:
+    except ValueError("Folder not found"):
         return False
     return files_list
 
@@ -56,9 +43,6 @@ def prepare_content(organization, file, repo_url, gitlab_token):
     else:
         return ""
     return full_content
-
-
-def iterate_folder(repo_url, gitlab_token):
     base = "|"
     marker = "-"
     list_files = []

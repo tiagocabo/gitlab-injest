@@ -1,5 +1,3 @@
-import pytest
-
 from src.utils import iterate_folder, iterate_folder_simple
 
 # load dotenv in order to get the token
