@@ -22,6 +22,13 @@ SUPPORTED_EXTENSIONS = [
     "setup.py",
     "Dockerfile",
     "docker-compose.yml",
+    ".tf",
+    ".tfvars",
+    ".hcl",
+    ".toml",
+    ".ini",
+    ".conf",
+    ".terraform-version",
 ]
 
 
