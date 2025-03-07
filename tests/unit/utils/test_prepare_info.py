@@ -2,12 +2,18 @@ from unittest.mock import patch
 
 from src.utils import prepare_info
 
+
 def test_prepare_info_single_file():
     """Test when a single file is processed with no subfolders."""
     with (
-        patch("src.gitlab.gitlab_api.list_subfolder", return_value=[]),
-        patch("src.utils.prepare_content", return_value="File content"),
+        patch("src.utils.list_subfolder", return_value=[]) as mock_list_subfolder,
+        patch(
+            "src.utils.prepare_content", return_value="File content"
+        ) as mock_prepare_content,
     ):
+        print(f"Mock list_subfolder: {mock_list_subfolder}")
+        print(f"Mock prepare_content: {mock_prepare_content}")
+
         files = ["script.py"]
         result_files, result_content = prepare_info(
             "gitlab.example.com", "my-repo", "fake_token", files, 0
@@ -23,7 +29,7 @@ def test_prepare_info_single_file():
 def test_prepare_info_multiple_files():
     """Test when multiple files are processed."""
     with (
-        patch("src.gitlab.gitlab_api.list_subfolder", side_effect=[[], []]),
+        patch("src.utils.list_subfolder", side_effect=[[], []]),
         patch("src.utils.prepare_content", side_effect=["Content A", "Content B"]),
     ):
         files = ["script.py", "README.md"]
@@ -42,7 +48,7 @@ def test_prepare_info_with_subfolder():
     """Test when a § is present with files inside."""
     with (
         patch(
-            "src.gitlab.gitlab_api.list_subfolder",
+            "src.utils.list_subfolder",
             side_effect=[["subfolder/file1.py"], []],
         ),
         patch("src.utils.prepare_content", return_value="File content"),
@@ -63,7 +69,7 @@ def test_prepare_info_nested_subfolders():
     """Test when multiple levels of subfolders exist."""
     with (
         patch(
-            "src.gitlab.gitlab_api.list_subfolder",
+            "src.utils.list_subfolder",
             side_effect=[
                 ["subfolder/nested"],
                 ["nested/file.py"],
@@ -87,7 +93,7 @@ def test_prepare_info_nested_subfolders():
 def test_prepare_info_no_files():
     """Test when an empty file list is given."""
     with (
-        patch("src.gitlab.gitlab_api.list_subfolder", return_value=[]),
+        patch("src.utils.list_subfolder", return_value=[]),
         patch("src.utils.prepare_content", return_value=""),
     ):
         files = []

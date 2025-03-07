@@ -4,9 +4,10 @@ from src.utils import iterate_folder_simple
 
 def test_iterate_folder_simple_with_files():
     """Test when the repository contains multiple files and folders."""
+
     with (
         patch(
-            "src.utils.gitlab.gitlab_api.list_subfolder",
+            "src.utils.list_subfolder",
             return_value=["file1.py", "subfolder"],
         ),
         patch(
@@ -30,7 +31,7 @@ def test_iterate_folder_simple_with_files():
 def test_iterate_folder_simple_empty_repo():
     """Test when the repository is empty."""
     with (
-        patch("src.utils.gitlab.gitlab_api.list_subfolder", return_value=[]),
+        patch("src.utils.list_subfolder", return_value=[]),
         patch("src.utils.prepare_info", return_value=([], "")),
     ):
         directory, full_content, file_count = iterate_folder_simple(
@@ -45,7 +46,7 @@ def test_iterate_folder_simple_empty_repo():
 def test_iterate_folder_simple_nested_folders():
     """Test when the repository has nested folders."""
     with (
-        patch("src.utils.gitlab.gitlab_api.list_subfolder", return_value=["folder1"]),
+        patch("src.utils.list_subfolder", return_value=["folder1"]),
         patch(
             "src.utils.prepare_info",
             return_value=(["|----folder1/", "|    |----file.py"], "Nested Content"),
@@ -70,7 +71,7 @@ def test_iterate_folder_simple_complex_structure():
     # Mock `list_subfolder` to return top-level folders
     with (
         patch(
-            "src.utils.gitlab.gitlab_api.list_subfolder",
+            "src.utils.list_subfolder",
             return_value=["folder1", "folder2"],
         ),
         patch(
