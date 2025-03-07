@@ -1,5 +1,5 @@
 test:
-	pytest --cov src tests
+	pytest --cov=src --cov-report=term-missing --cov-fail-under=90 tests
 
 setup:
 	poetry install --no-root
