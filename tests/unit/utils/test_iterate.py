@@ -1,4 +1,5 @@
 from unittest.mock import patch
+from src.config import SUPPORTED_EXTENSIONS
 from src.utils import iterate_folder_simple
 
 
@@ -16,7 +17,7 @@ def test_iterate_folder_simple_with_files():
         ),
     ):
         directory, full_content, file_count = iterate_folder_simple(
-            "gitlab.example.com", "my-repo", "fake_token"
+            "gitlab.example.com", "my-repo", "fake_token", SUPPORTED_EXTENSIONS
         )
 
     expected_directory = ["|----file1.py", "|----subfolder/"]
@@ -35,7 +36,7 @@ def test_iterate_folder_simple_empty_repo():
         patch("src.utils.prepare_info", return_value=([], "")),
     ):
         directory, full_content, file_count = iterate_folder_simple(
-            "gitlab.example.com", "my-repo", "fake_token"
+            "gitlab.example.com", "my-repo", "fake_token", SUPPORTED_EXTENSIONS
         )
 
     assert directory == []
@@ -53,7 +54,7 @@ def test_iterate_folder_simple_nested_folders():
         ),
     ):
         directory, full_content, file_count = iterate_folder_simple(
-            "gitlab.example.com", "my-repo", "fake_token"
+            "gitlab.example.com", "my-repo", "fake_token", SUPPORTED_EXTENSIONS
         )
 
     expected_directory = ["|----folder1/", "|    |----file.py"]
@@ -93,7 +94,7 @@ def test_iterate_folder_simple_complex_structure():
         ),
     ):
         directory, full_content, file_count = iterate_folder_simple(
-            "gitlab.example.com", "my-repo", "fake_token"
+            "gitlab.example.com", "my-repo", "fake_token", SUPPORTED_EXTENSIONS
         )
 
     expected_directory = [

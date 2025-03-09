@@ -1,8 +1,26 @@
 import streamlit as st
 import tiktoken
 from src.utils import iterate_folder_simple
+from src.config import SUPPORTED_EXTENSIONS
 
-gitlab_repo = st.text_input("Provide Gitlab Url.")
+with st.container():
+    gitlab_repo = st.text_input("Provide Gitlab Url.")
+
+c1, c2 = st.columns(2)
+exclude_all = c1.text_input("Exclude all i.e .md;.ipynb", value=".ipynb")
+include_only = c2.text_input("Include only i.e .py;.txt")
+
+if include_only:
+    SUPPORTED_EXTENSIONS = [
+        ext for ext in SUPPORTED_EXTENSIONS if ext in include_only.split(";")
+    ]
+
+if exclude_all:
+    SUPPORTED_EXTENSIONS = [
+        ext for ext in SUPPORTED_EXTENSIONS if ext not in exclude_all.split(";")
+    ]
+
+inspect = st.button("Inspect")
 
 with st.sidebar:
     gitlab_token = st.text_input("Gitlab Token", type="password")
@@ -11,7 +29,7 @@ with st.sidebar:
 col1, col2 = st.columns(2)
 
 
-if gitlab_repo:
+if gitlab_repo and inspect:
     # remove https if present
     gitlab_repo = gitlab_repo.replace("https://", "")
 
@@ -24,7 +42,7 @@ if gitlab_repo:
     repo_url = gitlab_repo.replace("/", "%2F")
 
     list_files, full_content, n_files = iterate_folder_simple(
-        organization, repo_url, gitlab_token
+        organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS
     )
 
     with col1:
@@ -39,7 +57,7 @@ if gitlab_repo:
 
     with col2:
         directory_text = st.code(
-            "List of files \n Repo structure:\n" + "\n".join(list_files),
+            "'Repo structure':\n" + "\n".join(list_files),
             language="text",
             height=300,
         )
