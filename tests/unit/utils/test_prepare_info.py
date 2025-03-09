@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from src.config import SUPPORTED_EXTENSIONS
 from src.utils import prepare_info
 
 
@@ -16,7 +17,7 @@ def test_prepare_info_single_file():
 
         files = ["script.py"]
         result_files, result_content = prepare_info(
-            "gitlab.example.com", "my-repo", "fake_token", files, 0
+            "gitlab.example.com", "my-repo", "fake_token", files, 0, SUPPORTED_EXTENSIONS
         )
 
     expected_files = ["|----script.py"]
@@ -34,7 +35,7 @@ def test_prepare_info_multiple_files():
     ):
         files = ["script.py", "README.md"]
         result_files, result_content = prepare_info(
-            "gitlab.example.com", "my-repo", "fake_token", files, 0
+            "gitlab.example.com", "my-repo", "fake_token", files, 0, SUPPORTED_EXTENSIONS
         )
 
     expected_files = ["|----script.py", "|----README.md"]
@@ -55,7 +56,7 @@ def test_prepare_info_with_subfolder():
     ):
         files = ["subfolder"]
         result_files, result_content = prepare_info(
-            "gitlab.example.com", "my-repo", "fake_token", files, 0
+            "gitlab.example.com", "my-repo", "fake_token", files, 0, SUPPORTED_EXTENSIONS
         )
 
     expected_files = ["|----subfolder/", "|    |----file1.py"]
@@ -80,7 +81,7 @@ def test_prepare_info_nested_subfolders():
     ):
         files = ["subfolder"]
         result_files, result_content = prepare_info(
-            "gitlab.example.com", "my-repo", "fake_token", files, 0
+            "gitlab.example.com", "my-repo", "fake_token", files, 0, SUPPORTED_EXTENSIONS
         )
 
     expected_files = ["|----subfolder/", "|    |----nested/", "|    |    |----file.py"]
@@ -98,7 +99,7 @@ def test_prepare_info_no_files():
     ):
         files = []
         result_files, result_content = prepare_info(
-            "gitlab.example.com", "my-repo", "fake_token", files, 0
+            "gitlab.example.com", "my-repo", "fake_token", files, 0, SUPPORTED_EXTENSIONS
         )
 
     assert result_files == []
