@@ -57,7 +57,7 @@ if gitlab_repo and inspect:
 
     with col2:
         directory_text = st.code(
-            "Repo structure:\n" + "\n".join(list_files),
+            "'Repo structure':\n" + "\n".join(list_files),
             language="text",
             height=300,
         )
