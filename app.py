@@ -7,7 +7,7 @@ with st.container():
     gitlab_repo = st.text_input("Provide Gitlab Url.")
 
 c1, c2 = st.columns(2)
-exclude_all = c1.text_input("Exclude all i.e .md;.ipynb")
+exclude_all = c1.text_input("Exclude all i.e .md;.ipynb", value=".ipynb")
 include_only = c2.text_input("Include only i.e .py;.txt")
 
 if include_only:
@@ -19,7 +19,7 @@ if exclude_all:
     SUPPORTED_EXTENSIONS = [
         ext for ext in SUPPORTED_EXTENSIONS if ext not in exclude_all.split(";")
     ]
-    
+
 inspect = st.button("Inspect")
 
 with st.sidebar:
@@ -57,7 +57,7 @@ if gitlab_repo and inspect:
 
     with col2:
         directory_text = st.code(
-            "List of files \n Repo structure:\n" + "\n".join(list_files),
+            "Repo structure:\n" + "\n".join(list_files),
             language="text",
             height=300,
         )
