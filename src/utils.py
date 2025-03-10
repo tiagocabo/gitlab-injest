@@ -7,7 +7,12 @@ logger = logging.getLogger(__name__)
 
 
 def prepare_content(
-    organization: str, file: str, repo_url: str, gitlab_token: str, extentions: str
+    organization: str,
+    file: str,
+    repo_url: str,
+    gitlab_token: str,
+    extentions: str,
+    main_branch: str,
 ) -> str:
     """Prepares the content of a specified file if it is a Python (.py) or Markdown (.md) file.
 
@@ -22,7 +27,9 @@ def prepare_content(
     """
     if any(file.endswith(ext) for ext in extentions):
         text_header = "=" * 50 + "\n" + file + "\n" + "=" * 50
-        content = read_repo_file(organization, repo_url, gitlab_token, file)
+        content = read_repo_file(
+            organization, repo_url, gitlab_token, file, main_branch
+        )
         full_content = "\n" + text_header + "\n" + content
     else:
         return ""
@@ -36,6 +43,7 @@ def prepare_info(
     files: List[str],
     level: int,
     extentions: List[str],
+    main_branch: str,
 ) -> Tuple[List[str], str]:
     """Recursively retrieves file and folder information, preparing a structured directory list and content.
 
@@ -57,11 +65,13 @@ def prepare_info(
 
     while files:
         file = files.pop(0)
-        sub_files = list_subfolder(organization, repo_url, gitlab_token, file)
+        sub_files = list_subfolder(
+            organization, repo_url, gitlab_token, file, main_branch
+        )
         if not sub_files:
             list_files += [level * base + marker + file.split("/")[-1]]
             file_content = prepare_content(
-                organization, file, repo_url, gitlab_token, extentions
+                organization, file, repo_url, gitlab_token, extentions, main_branch
             )
             if file_content:
                 full_content += file_content + "\n"
@@ -69,7 +79,13 @@ def prepare_info(
             list_files.append(level * base + marker + file.split("/")[-1] + "/")
             level += 1
             level_files, level_content = prepare_info(
-                organization, repo_url, gitlab_token, sub_files, level, extentions
+                organization,
+                repo_url,
+                gitlab_token,
+                sub_files,
+                level,
+                extentions,
+                main_branch,
             )
             level -= 1
             list_files += level_files
@@ -79,7 +95,11 @@ def prepare_info(
 
 
 def iterate_folder_simple(
-    organization: str, repo_url: str, gitlab_token: str, extentions: List[str]
+    organization: str,
+    repo_url: str,
+    gitlab_token: str,
+    extentions: List[str],
+    main_branch: str,
 ) -> Tuple[List[str], str, int]:
     """Iterates through the repository folder structure, returning file structure and content.
 
@@ -91,10 +111,10 @@ def iterate_folder_simple(
     Returns:
         Tuple[List[str], str, int]: A tuple containing a list of directory structure, concatenated file contents, and the count of directories/files.
     """
-    files = list_subfolder(organization, repo_url, gitlab_token)
+    files = list_subfolder(organization, repo_url, gitlab_token, main_branch)
     level = 0
     directory, full_content = prepare_info(
-        organization, repo_url, gitlab_token, files, level, extentions
+        organization, repo_url, gitlab_token, files, level, extentions, main_branch
     )
 
     return directory, full_content, len(directory)
