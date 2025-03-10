@@ -21,6 +21,39 @@ def try_request(url: str, headers: str, params: str):
         return []
 
 
+def list_branches(organization: str, repo_url: str, gitlab_token: str) -> tuple:
+    """
+    Lists the branches of a GitLab repository.
+    Args:
+        organization (str): The GitLab organization name.
+        repo_url (str): The URL-encoded path of the repository.
+        gitlab_token (str): The private token for GitLab API authentication.
+    Returns:
+        tuple: A tuple containing the default branch followed by other available branches.
+               Returns an empty tuple if the request fails.
+    """
+
+    url = f"https://{organization}/api/v4/projects/{repo_url}/repository/branches"
+
+    headers = {"PRIVATE-TOKEN": gitlab_token}
+
+    response = requests.get(url, headers=headers)
+
+    # hedge case no default branch is assigned
+    main_branch = ["master", "main"]
+    avl_branches = []
+    if response.status_code == 200:
+        branches = response.json()
+        for branch in branches:
+            if branch["default"] == True:
+                main_branch = [branch["name"]]
+            else:
+                avl_branches.append(branch["name"])
+        return tuple(main_branch + avl_branches)
+    else:
+        return ()
+
+
 def list_subfolder(
     organization: str, repo_url: str, gitlab_token: str, folder: str = "."
 ) -> List[str]:

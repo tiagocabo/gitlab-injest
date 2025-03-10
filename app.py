@@ -1,14 +1,23 @@
 import streamlit as st
 import tiktoken
+from src.gitlab.gitlab_api import list_branches
 from src.utils import iterate_folder_simple
 from src.config import SUPPORTED_EXTENSIONS
+
+if "AVAILABLE_BRANCHES" not in st.session_state:
+    st.session_state.AVAILABLE_BRANCHES = "main"
+
+AVAILABLE_BRANCHES = st.session_state.AVAILABLE_BRANCHES
+
 
 with st.container():
     gitlab_repo = st.text_input("Provide Gitlab Url.")
 
-c1, c2 = st.columns(2)
+c1, c2, c3, c4 = st.columns(4)
 exclude_all = c1.text_input("Exclude all i.e .md;.ipynb", value=".ipynb")
 include_only = c2.text_input("Include only i.e .py;.txt")
+branch = c3.selectbox("Pick your branch", AVAILABLE_BRANCHES)
+load_branches = c4.button("Load Branches")
 
 if include_only:
     SUPPORTED_EXTENSIONS = [
@@ -29,7 +38,7 @@ with st.sidebar:
 col1, col2 = st.columns(2)
 
 
-if gitlab_repo and inspect:
+if gitlab_repo and gitlab_token:
     # remove https if present
     gitlab_repo = gitlab_repo.replace("https://", "")
 
@@ -41,6 +50,11 @@ if gitlab_repo and inspect:
     # parse url
     repo_url = gitlab_repo.replace("/", "%2F")
 
+    if load_branches:
+        current_branches = list_branches(organization, repo_url, gitlab_token)
+        st.session_state.AVAILABLE_BRANCHES = current_branches
+
+if gitlab_repo and inspect:
     list_files, full_content, n_files = iterate_folder_simple(
         organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS
     )
