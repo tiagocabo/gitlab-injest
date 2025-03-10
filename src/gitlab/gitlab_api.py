@@ -55,7 +55,11 @@ def list_branches(organization: str, repo_url: str, gitlab_token: str) -> tuple:
 
 
 def list_subfolder(
-    organization: str, repo_url: str, gitlab_token: str, folder: str = "."
+    organization: str,
+    repo_url: str,
+    gitlab_token: str,
+    main_branch: str,
+    folder: str = ".",
 ) -> List[str]:
     """Lists the contents of a subfolder in a GitLab repository.
 
@@ -70,7 +74,7 @@ def list_subfolder(
     """
     url = f"https://{organization}/api/v4/projects/{repo_url}/repository/tree"
     headers = {"PRIVATE-TOKEN": gitlab_token}
-    params = {"ref": "main", "path": folder}
+    params = {"ref": main_branch, "path": folder}
     result = try_request(url, headers, params)
     if len(result) == 0:
         params = {"ref": "master", "path": folder}
@@ -79,7 +83,11 @@ def list_subfolder(
 
 
 def read_repo_file(
-    organization: str, repo_url: str, gitlab_token: str, file_path: str
+    organization: str,
+    repo_url: str,
+    gitlab_token: str,
+    file_path: str,
+    main_branch: str,
 ) -> Optional[str]:
     """Reads a file from a GitLab repository and returns its content.
 
@@ -94,7 +102,7 @@ def read_repo_file(
     """
     file_path = file_path.replace("/", "%2F")
     url = f"https://{organization}/api/v4/projects/{repo_url}/repository/files/{file_path}"
-    params = {"ref": "main"}
+    params = {"ref": main_branch}
     headers = {"PRIVATE-TOKEN": gitlab_token}
 
     response = requests.get(url, headers=headers, params=params)

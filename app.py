@@ -13,11 +13,10 @@ AVAILABLE_BRANCHES = st.session_state.AVAILABLE_BRANCHES
 with st.container():
     gitlab_repo = st.text_input("Provide Gitlab Url.")
 
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3 = st.columns(3)
 exclude_all = c1.text_input("Exclude all i.e .md;.ipynb", value=".ipynb")
 include_only = c2.text_input("Include only i.e .py;.txt")
 branch = c3.selectbox("Pick your branch", AVAILABLE_BRANCHES)
-load_branches = c4.button("Load Branches")
 
 if include_only:
     SUPPORTED_EXTENSIONS = [
@@ -50,13 +49,15 @@ if gitlab_repo and gitlab_token:
     # parse url
     repo_url = gitlab_repo.replace("/", "%2F")
 
-    if load_branches:
-        current_branches = list_branches(organization, repo_url, gitlab_token)
-        st.session_state.AVAILABLE_BRANCHES = current_branches
+    current_branches = list_branches(organization, repo_url, gitlab_token)
+    st.session_state.AVAILABLE_BRANCHES = current_branches
 
 if gitlab_repo and inspect:
+    # main branch is first position
+    main_branch = st.session_state.AVAILABLE_BRANCHES[0]
+
     list_files, full_content, n_files = iterate_folder_simple(
-        organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS
+        organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS, main_branch
     )
 
     with col1:
