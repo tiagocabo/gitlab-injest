@@ -65,6 +65,10 @@ def read_repo_file(
     headers = {"PRIVATE-TOKEN": gitlab_token}
 
     response = requests.get(url, headers=headers, params=params)
+    if response.status_code != 200:
+        params = {"ref": "master"}
+        response = requests.get(url, headers=headers, params=params)
+
     file = response.json()
     if "content" in file:
         file_content = base64.b64decode(file["content"]).decode("utf-8")
