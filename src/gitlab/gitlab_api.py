@@ -6,6 +6,21 @@ from typing import List, Optional
 logger = logging.getLogger(__name__)
 
 
+def try_request(url: str, headers: str, params: str):
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        try:
+            files = response.json()
+            return [file["path"] for file in files]
+        except ValueError:
+            logger.info("Failed to parse JSON response.")
+            return []
+    elif response.status_code == 404:
+        logger.info("Folder not found.")
+        return []
+
+
 def list_subfolder(
     organization: str, repo_url: str, gitlab_token: str, folder: str = "."
 ) -> List[str]:
@@ -23,19 +38,11 @@ def list_subfolder(
     url = f"https://{organization}/api/v4/projects/{repo_url}/repository/tree"
     headers = {"PRIVATE-TOKEN": gitlab_token}
     params = {"ref": "main", "path": folder}
-
-    response = requests.get(url, headers=headers, params=params)
-
-    if response.status_code == 200:
-        try:
-            files = response.json()
-            return [file["path"] for file in files]
-        except ValueError:
-            logger.info("Failed to parse JSON response.")
-            return []
-    elif response.status_code == 404:
-        logger.info("Folder not found.")
-        return []
+    result = try_request(url, headers, params)
+    if len(result) == 0:
+        params = {"ref": "master", "path": folder}
+        return try_request(url, headers, params)
+    return result
 
 
 def read_repo_file(
