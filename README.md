@@ -3,6 +3,8 @@
 ## Overview
 GitLab Ingest is a tool designed to extract and process the contents of private GitLab repositories. It enables users to fetch, analyze, and present repository files in a structured format while providing an intuitive UI via Streamlit.
 
+
+![alt text](image.png)
 ## Features
 - Connects to private GitLab repositories using an access token.
 - Lists repository files and directories in a structured format.
