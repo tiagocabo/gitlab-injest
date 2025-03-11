@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Definir variáveis de ambiente para evitar criação de caches desnecessários
+# Define environment variables to avoid cache issues
 ENV PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1 \
     POETRY_HOME="/opt/poetry" \
@@ -8,26 +8,30 @@ ENV PIP_NO_CACHE_DIR=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1
 
-# Instalar dependências do sistema
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl make \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar Poetry
+# Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# Definir diretório de trabalho
+# Set working directory
 WORKDIR /app
 
-# Copiar apenas os ficheiros essenciais para instalar dependências
+# Copy only the essential files for dependency installation
 COPY pyproject.toml poetry.lock ./
 
-# Instalar dependências
-RUN poetry install --no-root --only main
+# Install all dependencies (including dev for testing)
+RUN poetry install --no-root --with dev
 
-# Copiar código da aplicação
+# Copy the full application source code
 COPY src src
 COPY app.py .
+COPY Makefile .
 
-# Expor a porta usada pelo Streamlit
+# Expose the Streamlit app port
 EXPOSE 8509
+
+# Default command (can be overridden)
+CMD ["make", "app"]
