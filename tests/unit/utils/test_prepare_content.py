@@ -12,7 +12,7 @@ def test_prepare_content_python_file():
             "my-repo",
             "fake_token",
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_header = "=" * 50 + "\nscript.py\n" + "=" * 50
@@ -32,7 +32,7 @@ def test_prepare_content_markdown_file():
             "my-repo",
             "fake_token",
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_header = "=" * 50 + "\nREADME.md\n" + "=" * 50
@@ -49,7 +49,7 @@ def test_prepare_content_empty_python_file():
             "my-repo",
             "fake_token",
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_header = "=" * 50 + "\nempty_file.py\n" + "=" * 50
@@ -66,7 +66,7 @@ def test_prepare_content_unsupported_file():
             "my-repo",
             "fake_token",
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     assert result == ""  # The function should return an empty string

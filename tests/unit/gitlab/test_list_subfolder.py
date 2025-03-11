@@ -55,7 +55,10 @@ def test_list_subfolder_success(mock_requests_get, mock_success_response):
     mock_requests_get.return_value = mock_success_response
 
     results = list_subfolder(
-        organization="example.com", repo_url="org/repo", gitlab_token="token", main_branch="main",
+        organization="example.com",
+        repo_url="org/repo",
+        gitlab_token="token",
+        main_branch="main",
     )
     assert results == ["folder1", "folder2", "folder3"]
 
@@ -65,7 +68,10 @@ def test_list_subfolder_404(mock_requests_get, mock_404_response):
     mock_requests_get.return_value = mock_404_response
 
     results = list_subfolder(
-        organization="example.com", repo_url="org/repo", gitlab_token="token", main_branch="main",
+        organization="example.com",
+        repo_url="org/repo",
+        gitlab_token="token",
+        main_branch="main",
     )
     assert results == []
 
@@ -75,6 +81,9 @@ def test_list_subfolder_json_error(mock_requests_get, mock_json_error_response):
     mock_requests_get.return_value = mock_json_error_response
 
     results = list_subfolder(
-        organization="example.com", repo_url="org/repo", gitlab_token="token", main_branch="main",
+        organization="example.com",
+        repo_url="org/repo",
+        gitlab_token="token",
+        main_branch="main",
     )
     assert results == []

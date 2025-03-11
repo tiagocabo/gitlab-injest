@@ -58,6 +58,5 @@ def test_read_repo_file_insuccess(mock_requests_get, mock_content_insuccess):
         gitlab_token="token",
         file_path="file.py",
         main_branch="main",
-
     )
     assert content is None

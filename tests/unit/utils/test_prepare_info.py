@@ -23,7 +23,7 @@ def test_prepare_info_single_file():
             files,
             0,
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_files = ["|----script.py"]
@@ -47,7 +47,7 @@ def test_prepare_info_multiple_files():
             files,
             0,
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_files = ["|----script.py", "|----README.md"]
@@ -74,7 +74,7 @@ def test_prepare_info_with_subfolder():
             files,
             0,
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_files = ["|----subfolder/", "|    |----file1.py"]
@@ -105,7 +105,7 @@ def test_prepare_info_nested_subfolders():
             files,
             0,
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     expected_files = ["|----subfolder/", "|    |----nested/", "|    |    |----file.py"]
@@ -129,7 +129,7 @@ def test_prepare_info_no_files():
             files,
             0,
             SUPPORTED_EXTENSIONS,
-            "main"
+            "main",
         )
 
     assert result_files == []
