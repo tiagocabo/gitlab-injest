@@ -45,7 +45,7 @@ def list_branches(organization: str, repo_url: str, gitlab_token: str) -> tuple:
     if response.status_code == 200:
         branches = response.json()
         for branch in branches:
-            if branch["default"] == True:
+            if branch["default"]:
                 main_branch = [branch["name"]]
             else:
                 avl_branches.append(branch["name"])

@@ -7,8 +7,6 @@ from src.config import SUPPORTED_EXTENSIONS
 if "AVAILABLE_BRANCHES" not in st.session_state:
     st.session_state.AVAILABLE_BRANCHES = "main"
 
-AVAILABLE_BRANCHES = st.session_state.AVAILABLE_BRANCHES
-
 
 with st.container():
     gitlab_repo = st.text_input("Provide Gitlab Url.")
@@ -16,7 +14,7 @@ with st.container():
 c1, c2, c3 = st.columns(3)
 exclude_all = c1.text_input("Exclude all i.e .md;.ipynb", value=".ipynb")
 include_only = c2.text_input("Include only i.e .py;.txt")
-branch = c3.selectbox("Pick your branch", AVAILABLE_BRANCHES)
+branch = c3.selectbox("Pick your branch", st.session_state.AVAILABLE_BRANCHES)
 
 if include_only:
     SUPPORTED_EXTENSIONS = [
@@ -53,28 +51,26 @@ if gitlab_repo and gitlab_token:
     st.session_state.AVAILABLE_BRANCHES = current_branches
 
 if gitlab_repo and inspect:
-    # main branch is first position
-    main_branch = st.session_state.AVAILABLE_BRANCHES[0]
-
-    list_files, full_content, n_files = iterate_folder_simple(
-        organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS, main_branch
-    )
-
-    with col1:
-        enc = tiktoken.get_encoding("o200k_base")
-
-        count_tokens = len(enc.encode(full_content))
-        text_summary = st.code(
-            f""""Summary"\n **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""",
-            language="text",
-            height=300,
+    with st.spinner(f"Analysing repo {repo_url} and branch {branch}..."):
+        list_files, full_content, n_files = iterate_folder_simple(
+            organization, repo_url, gitlab_token, SUPPORTED_EXTENSIONS, branch
         )
 
-    with col2:
-        directory_text = st.code(
-            "'Repo structure':\n" + "\n".join(list_files),
-            language="text",
-            height=300,
-        )
+        with col1:
+            enc = tiktoken.get_encoding("o200k_base")
 
-    ta = st.code("Repo Contents: \n " + full_content, language="text", height=600)
+            count_tokens = len(enc.encode(full_content))
+            text_summary = st.code(
+                f""""Summary"\n **Repository**:  {gitlab_repo} \n\n **Analysed files**:  {n_files} \n\n **Token Count**:  {count_tokens} Openai tokens""",
+                language="text",
+                height=300,
+            )
+
+        with col2:
+            directory_text = st.code(
+                "'Repo structure':\n" + "\n".join(list_files),
+                language="text",
+                height=300,
+            )
+
+        ta = st.code("Repo Contents: \n " + full_content, language="text", height=600)
