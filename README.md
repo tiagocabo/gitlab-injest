@@ -97,4 +97,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Author
 Developed by Tiago Cabo.
 
-![Tests](https://github.com/yourusername/gitlab-injest/actions/workflows/test.yml/badge.svg)
+![Tests](https://github.com/tiagocabo/gitlab-injest/actions/workflows/test.yml/badge.svg)
+
+[![codecov](https://codecov.io/gh/tiagocabo/gitlab-injest/branch/main/graph/badge.svg)](https://codecov.io/gh/tiagocabo/gitlab-injest)

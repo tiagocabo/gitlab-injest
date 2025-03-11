@@ -20,3 +20,8 @@ jobs:
         run: |
           docker compose build
           docker compose up test --abort-on-container-exit
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml

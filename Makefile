@@ -1,7 +1,7 @@
 IMAGE_NAME = gitlab-injest
 
 local-test:
-	poetry run pytest --cov=src --cov-report=term-missing --cov-fail-under=90 tests
+	poetry run 	pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=90 tests
 
 setup:
 	poetry install --no-root
