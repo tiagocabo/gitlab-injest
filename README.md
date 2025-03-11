@@ -79,6 +79,11 @@ Run unit tests with:
 make test
 ```
 
+### Docker 
+```bash
+make start
+```
+
 ### Linting and Formatting
 Check for code quality issues and format the code:
 ```bash
