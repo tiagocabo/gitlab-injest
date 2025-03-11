@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    command: make app
+    ports:
+      - "8509:8509"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+  test:
+    build: .
+    command: make test
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+

@@ -10,7 +10,7 @@ ENV PIP_NO_CACHE_DIR=1 \
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    curl make \
     && rm -rf /var/lib/apt/lists/*
 
 # Instalar Poetry
@@ -31,6 +31,3 @@ COPY app.py .
 
 # Expor a porta usada pelo Streamlit
 EXPOSE 8509
-
-# Comando de entrada
-CMD ["poetry", "run", "streamlit", "run", "app.py"]
