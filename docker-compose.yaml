@@ -10,7 +10,7 @@ services:
       - PYTHONUNBUFFERED=1
   test:
     build: .
-    command: make test
+    command: make local-test
     volumes:
       - .:/app
     environment:

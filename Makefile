@@ -1,6 +1,6 @@
 IMAGE_NAME = gitlab-injest
 
-local_test:
+local-test:
 	pytest --cov=src --cov-report=term-missing --cov-fail-under=90 tests
 
 setup:
@@ -13,7 +13,7 @@ lint:
 	ruff check
 
 app:
-	streamlit run app.py
+	poetry run streamlit run app.py
 
 clean:
 	docker rmi $(IMAGE_NAME)
