@@ -1,5 +1,9 @@
 # GitLab Ingest
 
+![Tests](https://github.com/tiagocabo/gitlab-injest/actions/workflows/test.yml/badge.svg)
+
+[![codecov](https://codecov.io/gh/tiagocabo/gitlab-injest/branch/main/graph/badge.svg)](https://codecov.io/gh/tiagocabo/gitlab-injest)
+
 ## Overview
 GitLab Ingest is a tool designed to extract and process the contents of private GitLab repositories. It enables users to fetch, analyze, and present repository files in a structured format while providing an intuitive UI via Streamlit.
 
@@ -96,7 +100,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Author
 Developed by Tiago Cabo.
-
-![Tests](https://github.com/tiagocabo/gitlab-injest/actions/workflows/test.yml/badge.svg)
-
-[![codecov](https://codecov.io/gh/tiagocabo/gitlab-injest/branch/main/graph/badge.svg)](https://codecov.io/gh/tiagocabo/gitlab-injest)
