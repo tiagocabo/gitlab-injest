@@ -22,4 +22,5 @@ SUPPORTED_EXTENSIONS = [
     ".ini",
     ".conf",
     ".terraform-version",
+    ".yaml.j2",
 ]

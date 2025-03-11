@@ -1,6 +1,7 @@
 import streamlit as st
 import tiktoken
-from src.gitlab.gitlab_api import list_branches
+
+from src.gitlab.gitlab_api import list_branches, prepare_url
 from src.utils import iterate_folder_simple
 from src.config import SUPPORTED_EXTENSIONS
 
@@ -36,16 +37,7 @@ col1, col2 = st.columns(2)
 
 
 if gitlab_repo and gitlab_token:
-    # remove https if present
-    gitlab_repo = gitlab_repo.replace("https://", "")
-
-    # extract organization
-    organization = gitlab_repo.split("/")[0]
-
-    gitlab_repo = "/".join(gitlab_repo.split("/")[1:])
-
-    # parse url
-    repo_url = gitlab_repo.replace("/", "%2F")
+    organization, repo_url = prepare_url(gitlab_repo=gitlab_repo)
 
     current_branches = list_branches(organization, repo_url, gitlab_token)
     st.session_state.AVAILABLE_BRANCHES = current_branches

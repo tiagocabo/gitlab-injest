@@ -1,7 +1,8 @@
 import logging
 from typing import List, Tuple
 
-from src.gitlab.gitlab_api import list_subfolder, read_repo_file
+from src.config import SUPPORTED_EXTENSIONS
+from src.gitlab.gitlab_api import list_subfolder, prepare_url, read_repo_file
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,11 @@ def prepare_info(
     while files:
         file = files.pop(0)
         sub_files = list_subfolder(
-            organization, repo_url, gitlab_token, file, main_branch
+            organization=organization,
+            repo_url=repo_url,
+            gitlab_token=gitlab_token,
+            main_branch=main_branch,
+            folder=file,
         )
         if not sub_files:
             list_files += [level * base + marker + file.split("/")[-1]]

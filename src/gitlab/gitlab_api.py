@@ -6,6 +6,28 @@ from typing import List, Optional
 logger = logging.getLogger(__name__)
 
 
+def prepare_url(gitlab_repo: str) -> tuple:
+    """
+    Prepares the organization and repository URL for GitLab API requests.
+    Args:
+        gitlab_repo (str): The GitLab repository URL.
+    Returns:
+        tuple: A tuple containing the organization and repository URL.
+    """
+    # remove https if present
+    gitlab_repo = gitlab_repo.replace("https://", "")
+
+    # extract organization
+    organization = gitlab_repo.split("/")[0]
+
+    gitlab_repo = "/".join(gitlab_repo.split("/")[1:])
+
+    # parse url
+    repo_url = gitlab_repo.replace("/", "%2F")
+
+    return organization, repo_url
+
+
 def try_request(url: str, headers: str, params: str):
     response = requests.get(url, headers=headers, params=params)
 
@@ -76,9 +98,6 @@ def list_subfolder(
     headers = {"PRIVATE-TOKEN": gitlab_token}
     params = {"ref": main_branch, "path": folder}
     result = try_request(url, headers, params)
-    if len(result) == 0:
-        params = {"ref": "master", "path": folder}
-        return try_request(url, headers, params)
     return result
 
 
