@@ -37,7 +37,6 @@ col1, col2 = st.columns(2)
 
 
 if gitlab_repo and gitlab_token:
-
     organization, repo_url = prepare_url(gitlab_repo=gitlab_repo)
 
     current_branches = list_branches(organization, repo_url, gitlab_token)
